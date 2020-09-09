@@ -1,9 +1,12 @@
 package com.blockchain.cliente.blockchaincliente.util;
 
 import com.blockchain.cliente.blockchaincliente.config.BlockchainNetworkAttributes;
+import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
+import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
+import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.internal.org.objectweb.asm.TypeReference;
 import org.hyperledger.fabric.sdk.*;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.ProposalException;
@@ -61,16 +64,16 @@ public class ChaincodeExecuter {
 
         String payload = "";
 
-        for(ProposalResponse response : proposalResponses){
+        for (ProposalResponse response : proposalResponses) {
 
-            if(response.getStatus() == ChaincodeResponse.Status.SUCCESS){
+            if (response.getStatus() == ChaincodeResponse.Status.SUCCESS) {
                 payload = new String(response.getChaincodeActionResponsePayload());
                 Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.INFO, String.format(
                         "[√] Got success response from peer " + response.getPeer().getName()
                                 + " => Message : " + response.getMessage() + " Payload: %s ", payload));
                 successful.add(response);
             } else {
-                String status  = response.getStatus().toString();
+                String status = response.getStatus().toString();
                 String msg = response.getMessage();
                 Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.SEVERE, String.format(
                         "[×] Got failed response from peer " + response.getPeer().getName()
@@ -78,14 +81,14 @@ public class ChaincodeExecuter {
                 failed.add(response);
             }
         }
-        if(invoke){
+        if (invoke) {
             Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.INFO, "Send transaction to orderer...");
 
             try {
                 CompletableFuture<BlockEvent.TransactionEvent> future = channel.sendTransaction(successful);
                 BlockEvent.TransactionEvent transactionEvent = future.get();
                 future.complete(transactionEvent);
-                if (future.isDone()){
+                if (future.isDone()) {
                     Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.INFO, "Orderer response: txid: " + transactionEvent.getTransactionID());
                     Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.INFO, "Orderer response: block number: " + transactionEvent.getBlockEvent().getBlockNumber());
                     return payload;
@@ -96,7 +99,7 @@ public class ChaincodeExecuter {
             }
         }
 
-        return  payload;
+        return payload;
     }
 
     public String saveObject(String key, String json) {
@@ -126,31 +129,69 @@ public class ChaincodeExecuter {
         return result;
     }
 
-    public String query(RichQuery query){
+    public String updateUser(String key, UserIdentity newUserID) {
+
         String result = "";
+        String[] args = {key, newUserID.toJSONString()};
+
         try {
-            String[] args = {objectMapper.writeValueAsString(query)};
-            result = executeTransaction(false, "query", args);
-        }catch (InvalidArgumentException | ProposalException | UnsupportedEncodingException | InterruptedException | ExecutionException | TimeoutException | JsonProcessingException ex){
+            result = executeTransaction(true, "updateUserIdentity", args);
+        } catch (InvalidArgumentException | ProposalException ex) {
+            Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
+    }
+
+    public String getObjectByKey(String key) {
+        String result = "";
+        String[] args = {key};
+        try {
+            result = executeTransaction(false, "readUserIdentity", args);
+        } catch (InvalidArgumentException | ProposalException ex) {
             Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
 
-    public List<TransactionHistory> geHistories(String key) {
+    public String deleteObject(String key) {
         String result = "";
-        String [] args = {key};
-        try{
-            result = executeTransaction(false,"geHistories", args);
-        }catch (InvalidArgumentException | ProposalException ex) {
+        String[] args = {key};
+        try {
+            result = executeTransaction(true, "deleteUserIdentity", args);
+        } catch (InvalidArgumentException | ProposalException ex) {
             Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.SEVERE, null, ex);
         }
-        List<TrasactionHistory> modifications = new ArrayList<>();
-        TypeReference<List<TransactionHistory>> listType = new TypeReference<List<TrsnsactionHistory>>(){};
+
+        return result;
+    }
+
+    public String query(RichQuery query) {
+        String result = "";
+        try {
+            String[] args = {objectMapper.writeValueAsString(query)};
+            result = executeTransaction(false, "query", args);
+        } catch (InvalidArgumentException | ProposalException | JsonProcessingException ex) {
+            Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    public List<TransactionHistory> getHistory(String key) {
+        String result = "";
+        String[] args = {key};
+        try {
+            result = executeTransaction(false, "getHistory", args);
+        } catch (InvalidArgumentException | ProposalException ex) {
+            Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        List<TransactionHistory> modifications = new ArrayList<>();
+        TypeReference<List<TransactionHistory>> listType = new TypeReference<List<TransactionHistory>>() {
+        };
 
         try {
             modifications = objectMapper.readValue(result, listType);
-        }catch (IOException ex){
+        } catch (IOException ex) {
             Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.SEVERE, null, ex);
         }
         return modifications;
