@@ -7,14 +7,19 @@ import com.blockchain.cliente.blockchaincliente.persistence.UserDAO;
 import com.blockchain.cliente.blockchaincliente.util.ChaincodeExecuter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hyperledger.fabric.sdk.BlockInfo;
 import org.hyperledger.fabric.sdk.Channel;
+import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
+import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Repository
 public class UserDAOImp implements UserDAO {
 
     @Autowired
@@ -94,8 +99,28 @@ public class UserDAOImp implements UserDAO {
         String key = String.valueOf(id);
         List<TransactionHistory> list = chaincodeExecuter.getHistory(key);
         list.forEach((history) -> {
+            try{
+                String userString = objectMapper.writeValueAsString(history.getAsset());
+                UserIdentity userIdentity = objectMapper.readValue(userString, UserIdentity.class);
+                history.setAsset(userIdentity);
+                BlockInfo info = channel.queryBlockByTransactionID(history.getTransactionId());
+                for(BlockInfo.EnvelopeInfo envelopeInfo : info.getEnvelopeInfos()){
+                    if (envelopeInfo.getTransactionID().equals(history.getTransactionId())) {
+                        String creator = envelopeInfo.getCreator().getId();
+                        String mspId = envelopeInfo.getCreator().getMspid();
+                        history.setCreatorId(creator);
+                        history.setCreatorMspId(mspId);
+                    }
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(UserDAOImp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidArgumentException ex) {
+                Logger.getLogger(UserDAOImp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ProposalException ex) {
+                Logger.getLogger(UserDAOImp.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         });
-        return null;
+        return list;
     }
 }

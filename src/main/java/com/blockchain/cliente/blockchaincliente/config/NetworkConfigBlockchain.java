@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 @Configuration
 public class NetworkConfigBlockchain {
 
-    @Value("classpath:connectiondetails/connection-profile-cloud.json")
+    @Value("classpath:connectiondetails/connection-profile.json")
     private transient Resource connectionFile;
 
     /**

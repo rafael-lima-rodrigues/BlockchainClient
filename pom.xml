@@ -8,6 +8,7 @@
 		<version>2.3.3.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.blockchain.cliente</groupId>
 	<artifactId>blockchain-cliente</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -23,6 +24,7 @@
 	</properties>
 
 	<dependencies>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
