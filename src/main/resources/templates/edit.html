@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Edit Fish Details</title>
+    <th:block th:include="layout/header"></th:block>
+</head>
+<body>
+<div class="container">
+    <h2>Edit Fish Details</h2>
+    <div>
+        <form class="form-horizontal" th:object="${user}" th:action="@{/userId/save}" method="post">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">ID:</label>
+
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{id}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{name}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Date of Birth</label>
+                <div class="col-sm-10">
+                    <input type = "text"   class="form-control" th:field="*{dateOfBirth}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">CPF</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{cpf}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Sexo</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{sex}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Civil State</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{civilState}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+</html>

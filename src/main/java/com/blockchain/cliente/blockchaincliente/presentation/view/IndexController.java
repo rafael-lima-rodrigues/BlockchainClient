@@ -20,33 +20,33 @@ public class IndexController {
         return "index";
     }
 
-    @RequestMapping("/userId/add")
+    @RequestMapping("/products/add")
     public String createUser(Model model) {
-        model.addAttribute("userIdentity", new UserIdentity());
+        model.addAttribute("user", new UserIdentity());
         return "edit";
     }
 
-    @RequestMapping("/userId/edit")
+    @RequestMapping("/products/edit")
     public String editUser(@RequestParam String id, Model model) {
         model.addAttribute("userIdentity", userService.getById(id));
         return "edit";
     }
-    @RequestMapping("/userId/search")
+    @RequestMapping("/products/search")
     public String searchUser(Model model) {
-        model.addAttribute("userIdentity", new UserIdentity());
+        model.addAttribute("user", new UserIdentity());
         return "search";
     }
 
-    @RequestMapping("/userId")
-    public String getAllFish(Model model) {
+    @RequestMapping("/products")
+    public String getAllUser(Model model) {
         model.addAttribute("users", userService.getAll());
-        return "userId";
+        return "products";
     }
 
-    @RequestMapping("/userId/delete")
+    @RequestMapping("/products/delete")
     public String deleteFish(@RequestParam String id) {
         userService.delete(id);
-        return "redirect:/userId";
+        return "redirect:/products";
     }
 
     @RequestMapping("/userId/save")
@@ -59,12 +59,13 @@ public class IndexController {
             @RequestParam String civilState
     ) {
 
-        UserIdentity userIdentity;
-        if(id == null){
+        UserIdentity userIdentity = new UserIdentity();
+       /* if(id == null){
             userIdentity = new UserIdentity();
         } else {
             userIdentity = userService.getById(id);
-        }
+        }*/
+        userIdentity.setId(id);
         userIdentity.setName(name);
         userIdentity.setDateOfBirth(dateOfBirth);
         userIdentity.setCpf(cpf);
@@ -72,6 +73,6 @@ public class IndexController {
         userIdentity.setCivilState(civilState);
         userService.save(userIdentity);
 
-        return "redirect:/userId";
+        return "redirect:/products";
     }
 }

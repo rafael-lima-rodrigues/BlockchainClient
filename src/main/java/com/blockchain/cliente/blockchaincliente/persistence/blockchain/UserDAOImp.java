@@ -48,9 +48,11 @@ public class UserDAOImp implements UserDAO {
 
     @Override
     public void save(UserIdentity userIdentity) {
-
-        String key = UUID.randomUUID().toString();
-        chaincodeExecuter.saveUser(key, userIdentity);
+        if(userIdentity.getId() == null){
+            userIdentity.setId(UUID.randomUUID().toString());
+        }
+//        String key = UUID.randomUUID().toString();
+        chaincodeExecuter.saveUser(userIdentity.getId(), userIdentity);
     }
 
     @Override
