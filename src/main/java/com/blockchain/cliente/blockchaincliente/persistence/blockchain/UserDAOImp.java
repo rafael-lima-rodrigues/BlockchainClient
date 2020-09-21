@@ -50,9 +50,12 @@ public class UserDAOImp implements UserDAO {
     public void save(UserIdentity userIdentity) {
         if(userIdentity.getId() == null){
             userIdentity.setId(UUID.randomUUID().toString());
+            chaincodeExecuter.saveUser(userIdentity.getId(), userIdentity);
+
+        }else{
+            chaincodeExecuter.updateUser(userIdentity.getId(), userIdentity);
         }
 //        String key = UUID.randomUUID().toString();
-        chaincodeExecuter.saveUser(userIdentity.getId(), userIdentity);
     }
 
     @Override
@@ -83,7 +86,7 @@ public class UserDAOImp implements UserDAO {
 
         RichQuery query = new RichQuery();
         Map<String, Object> selector = new HashMap<>();
-        selector.put("docType","userIdentity");
+        selector.put("typeDoc","usersDoc");
         query.setSelector(selector);
 
         String json = chaincodeExecuter.query(query);
@@ -98,12 +101,13 @@ public class UserDAOImp implements UserDAO {
 
     @Override
     public List<TransactionHistory> getHistory(String id) {
-        String key = String.valueOf(id);
-        List<TransactionHistory> list = chaincodeExecuter.getHistory(key);
+      //  String key = String.valueOf(id);
+        List<TransactionHistory> list = chaincodeExecuter.getHistory(id);
         list.forEach((history) -> {
             try{
-                String userString = objectMapper.writeValueAsString(history.getAsset());
-                UserIdentity userIdentity = objectMapper.readValue(userString, UserIdentity.class);
+                //String userString = objectMapper.writeValueAsString(history.getAsset());
+               // UserIdentity userIdentity = objectMapper.readValue(userString, UserIdentity.class);
+                UserIdentity userIdentity = objectMapper.readValue(history.getAsset().toString(), UserIdentity.class);
                 history.setAsset(userIdentity);
                 BlockInfo info = channel.queryBlockByTransactionID(history.getTransactionId());
                 for(BlockInfo.EnvelopeInfo envelopeInfo : info.getEnvelopeInfos()){

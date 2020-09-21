@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,8 +17,8 @@ public class UserIdentity implements Serializable {
     private String name;
     private String dateOfBirth;
     private String cpf;
-    private String sex;
     private String civilState;
+    private final String typeDoc = "usersDoc";
 
     public String getId() {
         return id;
@@ -52,13 +51,13 @@ public class UserIdentity implements Serializable {
         this.cpf = cpf;
     }
 
-    public String getSex() {
-        return sex;
+    public String getTypeDoc() {
+        return typeDoc;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
+   // public void setSex(String sex) {
+   //     this.sex = sex;
+   // }
 
     public String getCivilState() {
         return civilState;

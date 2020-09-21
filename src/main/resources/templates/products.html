@@ -19,9 +19,9 @@
                 <th>History</th>
             </tr>
             <tr th:each="userIdentity : ${users}">
-                <td th:text="${userIdentity.type}">Salmon</td>
-                <td th:text="${userIdentity.weight}">2</td>
-                <td th:text="${userIdentity.price}">3</td>
+                <td th:text="${userIdentity.name}">Salmon</td>
+                <td th:text="${userIdentity.cpf}">2</td>
+                <td th:text="${userIdentity.dateOfBirth}">3</td>
                 <td><a th:href="${'/blockchain/products/edit?id=' + userIdentity.id}" class="btn btn-default">Edit</a></td>
                 <td><a th:href="${'/blockchain/products/delete?id=' + userIdentity.id}" class="btn btn-danger">Delete</a></td>
                 <td><a th:href="${'/blockchain/products/history?id=' + userIdentity.id}" class="btn btn-default">View</a></td>

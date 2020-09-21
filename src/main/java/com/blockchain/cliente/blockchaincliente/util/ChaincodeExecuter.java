@@ -181,7 +181,7 @@ public class ChaincodeExecuter {
         String result = "";
         String[] args = {key};
         try {
-            result = executeTransaction(false, "getHistory", args);
+            result = executeTransaction(false, "getUserHistory", args);
         } catch (InvalidArgumentException | ProposalException ex) {
             Logger.getLogger(ChaincodeExecuter.class.getName()).log(Level.SEVERE, null, ex);
         }
