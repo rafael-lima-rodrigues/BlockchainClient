@@ -11,17 +11,17 @@
         <h2>Fish</h2>
         <table class="table table-striped">
             <tr>
-                <th>Type</th>
-                <th>Weight</th>
-                <th>Price</th>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
                 <th>Edit</th>
                 <th>Delete</th>
                 <th>History</th>
             </tr>
             <tr th:each="userIdentity : ${users}">
-                <td th:text="${userIdentity.name}">Salmon</td>
-                <td th:text="${userIdentity.cpf}">2</td>
-                <td th:text="${userIdentity.dateOfBirth}">3</td>
+                <td th:text="${userIdentity.id}">Salmon</td>
+                <td th:text="${userIdentity.name}">2</td>
+                <td th:text="${userIdentity.cpf}">3</td>
                 <td><a th:href="${'/blockchain/products/edit?id=' + userIdentity.id}" class="btn btn-default">Edit</a></td>
                 <td><a th:href="${'/blockchain/products/delete?id=' + userIdentity.id}" class="btn btn-danger">Delete</a></td>
                 <td><a th:href="${'/blockchain/products/history?id=' + userIdentity.id}" class="btn btn-default">View</a></td>
