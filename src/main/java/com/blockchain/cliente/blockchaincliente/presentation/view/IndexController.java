@@ -1,8 +1,10 @@
 package com.blockchain.cliente.blockchaincliente.presentation.view;
 
+import com.blockchain.cliente.blockchaincliente.model.DigitalSign;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
+import com.blockchain.cliente.blockchaincliente.service.DigitalSignService;
 import com.blockchain.cliente.blockchaincliente.service.UserService;
 import org.bouncycastle.math.raw.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class IndexController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    DigitalSignService digitalSignService;
+
     @RequestMapping("/")
     public String welcome(Model model) {
         return "index";
@@ -30,6 +35,12 @@ public class IndexController {
     public String createUser(Model model) {
         model.addAttribute("userIdentity", new UserIdentity());
         return "edit";
+    }
+
+    @RequestMapping("digitalsign/add")
+    public  String createDigitalSign(Model model){
+        model.addAttribute("digitalSign", new DigitalSign());
+        return "editDigitalSign";
     }
 
     @RequestMapping("/products/edit")

@@ -15,7 +15,7 @@ public class DigitalSign implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id;
-    private String dates;
+    private String data;
     private String userIdOwner;
     private final String typeDoc = "DocSigned";
 
@@ -29,12 +29,12 @@ public class DigitalSign implements Serializable {
         this.id = id;
     }
 
-    public String getDates() {
-        return dates;
+    public String getData() {
+        return data;
     }
 
-    public void setDates(String dates) {
-        this.dates = dates;
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getUserIdOwner() {
