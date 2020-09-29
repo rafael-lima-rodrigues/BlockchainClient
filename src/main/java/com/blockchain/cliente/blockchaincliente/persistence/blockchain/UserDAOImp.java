@@ -4,8 +4,7 @@ import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.blockchain.cliente.blockchaincliente.persistence.UserDAO;
-import com.blockchain.cliente.blockchaincliente.util.ChaincodeExecuter;
-import com.blockchain.cliente.blockchaincliente.util.ChaincodeExecuterUser;
+import com.blockchain.cliente.blockchaincliente.util.IChaincodeExecuter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hyperledger.fabric.sdk.BlockInfo;
@@ -26,7 +25,7 @@ public class UserDAOImp implements UserDAO {
 
     @Autowired
     @Qualifier("userExecuter")
-    ChaincodeExecuter chaincodeExecuter;
+    IChaincodeExecuter chaincodeExecuter;
 
     @Autowired
     ObjectMapper objectMapper;

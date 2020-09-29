@@ -1,6 +1,6 @@
 package com.blockchain.cliente.blockchaincliente.service.implent;
 
-import com.blockchain.cliente.blockchaincliente.model.DigitalSign;
+import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
@@ -20,29 +20,33 @@ public class DigitalSignServiceImpl implements DigitalSignService {
     DigitalSignDAO digitalSignDAO;
 
     @Override
-    public DigitalSign getById(String id) {
-        return digitalSignDAO.getbyId(id);
+    public DocumentsSigned getById(String id, String userId) {
+        return digitalSignDAO.getbyId(id,userId);
     }
 
     @Override
-    public void save(DigitalSign digitalSign) {
-        digitalSignDAO.save(digitalSign);
-
+    public void save(DocumentsSigned documentsSigned) {
+        digitalSignDAO.save(documentsSigned);
     }
 
     @Override
-    public List<DigitalSign> query(RichQuery query) {
-        return digitalSignDAO.query(query);
+    public void update(String key, String userId, DocumentsSigned documentsSigned) {
+       digitalSignDAO.update(key, userId, documentsSigned);
     }
 
     @Override
-    public void delete(String id) {
-        digitalSignDAO.delete(id);
+    public List<DocumentsSigned> query(RichQuery query, String userId) {
+        return digitalSignDAO.query(query, userId);
     }
 
     @Override
-    public List<DigitalSign> getAll() {
-        return digitalSignDAO.getAll();
+    public void delete(String userId, String documentId) {
+        digitalSignDAO.delete(userId,documentId);
+    }
+
+    @Override
+    public List<DocumentsSigned> getAll(String userId) {
+        return digitalSignDAO.getAll(userId);
     }
 
     @Override

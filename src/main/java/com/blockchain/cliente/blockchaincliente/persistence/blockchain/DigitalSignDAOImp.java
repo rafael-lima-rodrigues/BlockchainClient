@@ -1,11 +1,13 @@
 package com.blockchain.cliente.blockchaincliente.persistence.blockchain;
 
-import com.blockchain.cliente.blockchaincliente.model.DigitalSign;
+import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
+import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.blockchain.cliente.blockchaincliente.persistence.DigitalSignDAO;
-import com.blockchain.cliente.blockchaincliente.util.ChaincodeExecuter;
-import com.blockchain.cliente.blockchaincliente.util.ChaincodeExecuterUser;
+import com.blockchain.cliente.blockchaincliente.persistence.UserDAO;
+import com.blockchain.cliente.blockchaincliente.util.IChaincodeExecuter;
+import com.blockchain.cliente.blockchaincliente.util.IChaincodeExecuterDS;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hyperledger.fabric.sdk.BlockInfo;
@@ -25,8 +27,8 @@ import java.util.logging.Logger;
 public class DigitalSignDAOImp implements DigitalSignDAO {
 
     @Autowired
-    @Qualifier("digtalSignExecuter")
-    ChaincodeExecuter chaincodeExecuter;
+    @Qualifier("DsExecuter")
+    IChaincodeExecuterDS chaincodeExecuterDS;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -35,82 +37,91 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
     Channel channel;
 
     @Override
-    public DigitalSign getbyId(String id) {
+    public DocumentsSigned getbyId(String id, String userId) {
         String key = String.valueOf(id);
-        String json = chaincodeExecuter.getObjectByKey(key);
-        DigitalSign digitalSign = null;
+        String json = chaincodeExecuterDS.getObjectByKey(key, userId);
+        DocumentsSigned documentsSigned = null;
         if (json != null && !json.isEmpty()) {
             try {
-                digitalSign = objectMapper.readValue(json, DigitalSign.class);
+                documentsSigned = objectMapper.readValue(json, DocumentsSigned.class);
             } catch (IOException ex) {
                 Logger.getLogger(DigitalSignDAOImp.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return digitalSign;
+        return documentsSigned;
     }
 
     @Override
-    public void save(DigitalSign digitalSign) {
+    public void save(DocumentsSigned documentsSigned) {
 
-            digitalSign.setId(UUID.fromString(digitalSign.getUserIdOwner()).toString());
-            chaincodeExecuter.save(digitalSign.getId(), digitalSign);
-
+            documentsSigned.setId(UUID.randomUUID().toString());
+            chaincodeExecuterDS.save(documentsSigned.getId(), documentsSigned);
 
 //        String key = UUID.randomUUID().toString();
     }
 
     @Override
-    public List<DigitalSign> query(RichQuery query) {
-        List<DigitalSign> digitalSigns = new ArrayList<>();
-        TypeReference<List<DigitalSign>> listType = new TypeReference<List<DigitalSign>>() {
+    public void update(String key, String userId, DocumentsSigned documentsSigned) {
+        chaincodeExecuterDS.update(key, userId,documentsSigned);
+
+    }
+
+    public void update(DocumentsSigned documentsSigned, String userId){
+        chaincodeExecuterDS.update(documentsSigned.getId(), userId, documentsSigned);
+    }
+
+    @Override
+    public List<DocumentsSigned> query(RichQuery query, String userId) {
+        List<DocumentsSigned> documentsSignedList = new ArrayList<>();
+        TypeReference<List<DocumentsSigned>> listType = new TypeReference<List<DocumentsSigned>>() {
         };
 
-        String json = chaincodeExecuter.query(query);
+        String json = chaincodeExecuterDS.query(query, userId);
         try {
-            digitalSigns = objectMapper.readValue(json, listType);
+            documentsSignedList = objectMapper.readValue(json, listType);
         } catch (IOException ex) {
             Logger.getLogger(DigitalSignDAOImp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return digitalSigns;
+        return documentsSignedList;
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(String idUser, String idDocument) {
 
-        chaincodeExecuter.deleteObject(String.valueOf(id));
+        chaincodeExecuterDS.deleteObject(idUser,String.valueOf(idDocument));
     }
 
     @Override
-    public List<DigitalSign> getAll() {
-        List<DigitalSign> identityList = new ArrayList<>();
-        TypeReference<List<DigitalSign>> listType = new TypeReference<List<DigitalSign>>() {
+    public List<DocumentsSigned> getAll(String userId) {
+        List<DocumentsSigned> documentsSignedList = new ArrayList<>();
+        TypeReference<List<DocumentsSigned>> listType = new TypeReference<List<DocumentsSigned>>() {
         };
 
         RichQuery query = new RichQuery();
         Map<String, Object> selector = new HashMap<>();
-        selector.put("typeDoc", "DocSigned");
+        selector.put("typeDoc", "DocsCreated");
         query.setSelector(selector);
 
-        String json = chaincodeExecuter.query(query);
+        String json = chaincodeExecuterDS.query(query, userId);
         try {
-            identityList = objectMapper.readValue(json, listType);
+            documentsSignedList = objectMapper.readValue(json, listType);
         } catch (IOException ex) {
             Logger.getLogger(DigitalSignDAOImp.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return identityList;
+        return documentsSignedList;
     }
 
     @Override
     public List<TransactionHistory> getHistory(String id) {
         //  String key = String.valueOf(id);
-        List<TransactionHistory> list = chaincodeExecuter.getHistory(id);
+        List<TransactionHistory> list = chaincodeExecuterDS.getHistory(id);
         list.forEach((history) -> {
             try {
                 //String userString = objectMapper.writeValueAsString(history.getAsset());
-                // digitalSign digitalSign = objectMapper.readValue(userString, digitalSign.class);
-                DigitalSign digitalSign = objectMapper.readValue(history.getAsset().toString(), DigitalSign.class);
-                history.setAsset(digitalSign);
+                // UserIdentity userIdentity = objectMapper.readValue(userString, UserIdentity.class);
+                DocumentsSigned documentsSigned = objectMapper.readValue(history.getAsset().toString(), DocumentsSigned.class);
+                history.setAsset(documentsSigned);
                 BlockInfo info = channel.queryBlockByTransactionID(history.getTransactionId());
                 for (BlockInfo.EnvelopeInfo envelopeInfo : info.getEnvelopeInfos()) {
                     if (envelopeInfo.getTransactionID().equals(history.getTransactionId())) {

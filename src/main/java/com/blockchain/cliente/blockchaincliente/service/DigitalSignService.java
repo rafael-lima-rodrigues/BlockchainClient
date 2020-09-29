@@ -1,6 +1,6 @@
 package com.blockchain.cliente.blockchaincliente.service;
 
-import com.blockchain.cliente.blockchaincliente.model.DigitalSign;
+import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
@@ -9,15 +9,17 @@ import java.util.List;
 
 public interface DigitalSignService {
 
-    DigitalSign getById(String id);
+    DocumentsSigned getById(String id, String userId);
 
-    void save(DigitalSign digitalSign);
+    void save(DocumentsSigned documentsSigned);
 
-    List<DigitalSign> query(RichQuery query);
+    void update(String key, String userId, DocumentsSigned documentsSigned);
 
-    void delete(String id);
+    List<DocumentsSigned> query(RichQuery query, String useId);
 
-    List<DigitalSign> getAll();
+    void delete(String userId, String documentId);
+
+    List<DocumentsSigned> getAll(String useId);
 
     List<TransactionHistory> getHistory(String id);
 }

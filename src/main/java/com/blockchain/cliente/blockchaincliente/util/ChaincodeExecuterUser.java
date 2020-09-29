@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 @Component
 @Qualifier("userExecuter")
-public class ChaincodeExecuterUser implements ChaincodeExecuter<UserIdentity> {
+public class ChaincodeExecuterUser implements IChaincodeExecuter {
 
     private ChaincodeID chaincodeID;
     private final long waitTime = 2000;
@@ -169,7 +169,7 @@ public class ChaincodeExecuterUser implements ChaincodeExecuter<UserIdentity> {
         String result = "";
         try {
             String[] args = {objectMapper.writeValueAsString(query)};
-            result = executeTransaction(false, "query", args);
+            result = executeTransaction(false, "queryUserID", args);
         } catch (InvalidArgumentException | ProposalException | JsonProcessingException ex) {
             Logger.getLogger(ChaincodeExecuterUser.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -1,7 +1,7 @@
 package com.blockchain.cliente.blockchaincliente.util;
 
 import com.blockchain.cliente.blockchaincliente.config.BlockchainNetworkAttributes;
-import com.blockchain.cliente.blockchaincliente.model.DigitalSign;
+import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
@@ -26,8 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-@Qualifier("digtalSignExecuter")
-public class ChaincodeExecuterDigitalSign implements ChaincodeExecuter<DigitalSign> {
+@Qualifier("DsExecuter")
+public class ChaincodeExecuterDS implements IChaincodeExecuterDS {
 
     private ChaincodeID chaincodeID;
     private final long waitTime = 2000;
@@ -42,7 +42,7 @@ public class ChaincodeExecuterDigitalSign implements ChaincodeExecuter<DigitalSi
     @Autowired
     ObjectMapper objectMapper;
 
-    public String executeTransaction(boolean invoke, String func, String[] args) throws InvalidArgumentException, ProposalException {
+    public String executeTransactionDS(boolean invoke, String func, String[] args) throws InvalidArgumentException, ProposalException {
 
         ChaincodeID.Builder chaincodeIDBuilder = ChaincodeID.newBuilder()
                 .setName(BlockchainNetworkAttributes.CHAINCODE_1_NAME)
@@ -60,7 +60,7 @@ public class ChaincodeExecuterDigitalSign implements ChaincodeExecuter<DigitalSi
         List<ProposalResponse> successful = new LinkedList<>();
         List<ProposalResponse> failed = new LinkedList<>();
 
-        Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.INFO, String.format(
+        Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.INFO, String.format(
                 "Sending transactionproposal to chaincode: function = " + func
                         + " args = " + String.join(", ", args)));
         Collection<ProposalResponse> proposalResponses = channel.sendTransactionProposal(transactionProposalRequest, channel.getPeers());
@@ -71,33 +71,33 @@ public class ChaincodeExecuterDigitalSign implements ChaincodeExecuter<DigitalSi
 
             if (response.getStatus() == ChaincodeResponse.Status.SUCCESS) {
                 payload = new String(response.getChaincodeActionResponsePayload());
-                Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.INFO, String.format(
+                Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.INFO, String.format(
                         "[√] Got success response from peer " + response.getPeer().getName()
                                 + " => Message : " + response.getMessage() + " Payload: %s ", payload));
                 successful.add(response);
             } else {
                 String status = response.getStatus().toString();
                 String msg = response.getMessage();
-                Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, String.format(
+                Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, String.format(
                         "[×] Got failed response from peer " + response.getPeer().getName()
                                 + " => Message : " + msg + " Status :" + status));
                 failed.add(response);
             }
         }
         if (invoke) {
-            Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.INFO, "Send transaction to orderer...");
+            Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.INFO, "Send transaction to orderer...");
 
             try {
                 CompletableFuture<BlockEvent.TransactionEvent> future = channel.sendTransaction(successful);
                 BlockEvent.TransactionEvent transactionEvent = future.get();
                 future.complete(transactionEvent);
                 if (future.isDone()) {
-                    Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.INFO, "Orderer response: txid: " + transactionEvent.getTransactionID());
-                    Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.INFO, "Orderer response: block number: " + transactionEvent.getBlockEvent().getBlockNumber());
+                    Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.INFO, "Orderer response: txid: " + transactionEvent.getTransactionID());
+                    Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.INFO, "Orderer response: block number: " + transactionEvent.getBlockEvent().getBlockNumber());
                     return payload;
                 }
             } catch (InterruptedException | ExecutionException ex) {
-                Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, "Orderer exception happened: " + ex);
+                Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, "Orderer exception happened: " + ex);
                 return null;
             }
         }
@@ -110,72 +110,72 @@ public class ChaincodeExecuterDigitalSign implements ChaincodeExecuter<DigitalSi
         String result = "";
         String[] args = {key, json};
         try {
-            result = executeTransaction(true, "createUserIdentity", args);
+            result = executeTransactionDS(true, "createDigitalSign", args);
         } catch (InvalidArgumentException | ProposalException ex) {
-            Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return result;
     }
 
-    public String save(String key, DigitalSign digitalSignID) {
+    public String save(String key, DocumentsSigned documentsSigned) {
 
         String result = "";
-        String[] args = {key, digitalSignID.toJSONString()};
+        String[] args = {key, documentsSigned.toJSONString()};
 
         try {
-            result = executeTransaction(true, "createUserIdentity", args);
+            result = executeTransactionDS(true, "createDigitalSign", args);
         } catch (InvalidArgumentException | ProposalException ex) {
-            Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return result;
     }
 
-    public String update(String key, DigitalSign newUserID) {
+    public String update(String key, String userId, DocumentsSigned documentsSigned) {
 
         String result = "";
-        String[] args = {key, newUserID.toJSONString()};
+        String[] args = {key, userId, documentsSigned.toJSONString()};
 
         try {
-            result = executeTransaction(true, "updateUserIdentity", args);
+            result = executeTransactionDS(true, "updateDigitalSign", args);
         } catch (InvalidArgumentException | ProposalException ex) {
-            Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return result;
     }
 
-    public String getObjectByKey(String key) {
+    public String getObjectByKey(String key, String userId) {
+        String result = "";
+        String[] args = {key, userId};
+        try {
+            result = executeTransactionDS(false, "readDigitalSign", args);
+        } catch (InvalidArgumentException | ProposalException ex) {
+            Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    public String deleteObject(String userId, String key) {
         String result = "";
         String[] args = {key};
         try {
-            result = executeTransaction(false, "readUserIdentity", args);
+            result = executeTransactionDS(true, "deleteDigitalSign", args);
         } catch (InvalidArgumentException | ProposalException ex) {
-            Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return result;
-    }
-
-    public String deleteObject(String key) {
-        String result = "";
-        String[] args = {key};
-        try {
-            result = executeTransaction(true, "deleteUserIdentity", args);
-        } catch (InvalidArgumentException | ProposalException ex) {
-            Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return result;
     }
 
-    public String query(RichQuery query) {
+    public String query(RichQuery query, String userId) {
         String result = "";
         try {
-            String[] args = {objectMapper.writeValueAsString(query)};
-            result = executeTransaction(false, "query", args);
+            String[] args = {objectMapper.writeValueAsString(query), userId};
+            result = executeTransactionDS(false, "queryDS", args);
         } catch (InvalidArgumentException | ProposalException | JsonProcessingException ex) {
-            Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -184,9 +184,9 @@ public class ChaincodeExecuterDigitalSign implements ChaincodeExecuter<DigitalSi
         String result = "";
         String[] args = {key};
         try {
-            result = executeTransaction(false, "getUserHistory", args);
+            result = executeTransactionDS(false, "getDSHistory", args);
         } catch (InvalidArgumentException | ProposalException ex) {
-            Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, null, ex);
         }
         List<TransactionHistory> modifications = new ArrayList<>();
         TypeReference<List<TransactionHistory>> listType = new TypeReference<List<TransactionHistory>>() {
@@ -195,7 +195,7 @@ public class ChaincodeExecuterDigitalSign implements ChaincodeExecuter<DigitalSi
         try {
             modifications = objectMapper.readValue(result, listType);
         } catch (IOException ex) {
-            Logger.getLogger(ChaincodeExecuterDigitalSign.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, null, ex);
         }
         return modifications;
     }

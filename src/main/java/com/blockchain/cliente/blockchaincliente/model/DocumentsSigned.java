@@ -11,15 +11,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DigitalSign implements Serializable {
+public class DocumentsSigned implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id;
-    private String data;
+    private String dados;
     private String userIdOwner;
-    private final String typeDoc = "DocSigned";
+    private final String typeDoc = "DocsCreated";
+
+//private final String typeDoc = "DocSigned";
 
     private List<String> listUserMembers = new ArrayList<>();
+
+    public void addMember(String member){
+        this.listUserMembers.add(member);
+    }
 
     public String getId() {
         return id;
@@ -29,12 +35,12 @@ public class DigitalSign implements Serializable {
         this.id = id;
     }
 
-    public String getData() {
-        return data;
+    public String getDados() {
+        return dados;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setDados(String dados) {
+        this.dados = dados;
     }
 
     public String getUserIdOwner() {
@@ -49,6 +55,10 @@ public class DigitalSign implements Serializable {
         return typeDoc;
     }
 
+    //public String getTypeDoc() {
+       // return typeDoc;
+    //}
+
     public List<String> getListUserMembers() {
         return listUserMembers;
     }
@@ -56,25 +66,28 @@ public class DigitalSign implements Serializable {
     public void setListUserMembers(List<String> listUserMembers) {
         this.listUserMembers = listUserMembers;
     }
+    /*public void setListUserMembers(String userId){
+        this.listUserMembers.add(userId);
+    }*/
 
     public String toJSONString(){
         ObjectMapper mapper = new ObjectMapper();
         try{
             return mapper.writeValueAsString(this);
         }catch (JsonProcessingException ex){
-            Logger.getLogger(DigitalSign.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DocumentsSigned.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    public DigitalSign fromJSONString(String json){
+    public DocumentsSigned fromJSONString(String json){
         ObjectMapper mapper = new ObjectMapper();
-        DigitalSign digitalSign = null;
+        DocumentsSigned documentsSigned = null;
         try{
-            digitalSign = mapper.readValue(json, DigitalSign.class);
+            documentsSigned = mapper.readValue(json, DocumentsSigned.class);
         }catch (JsonProcessingException ex){
-            Logger.getLogger(DigitalSign.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DocumentsSigned.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return digitalSign;
+        return documentsSigned;
     }
 }

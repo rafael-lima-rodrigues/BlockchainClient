@@ -1,6 +1,6 @@
 package com.blockchain.cliente.blockchaincliente.presentation.rest;
 
-import com.blockchain.cliente.blockchaincliente.model.DigitalSign;
+import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.blockchain.cliente.blockchaincliente.service.DigitalSignService;
@@ -22,57 +22,56 @@ public class DigitalSignController {
     DigitalSignService digitalSignService;
 
     @RequestMapping("/get")
-    DigitalSign getDigitalSign(@RequestParam String id) {
-        return digitalSignService.getById(id);
+    DocumentsSigned getDS(@RequestParam String id,
+                          @RequestParam String userId) {
+        return digitalSignService.getById(id,userId);
     }
 
     @RequestMapping("/getAll")
-    List<DigitalSign> getAllDigitalSign() {
-        return digitalSignService.getAll();
+    List<DocumentsSigned> getAllDS(@RequestParam String userId) {
+        return digitalSignService.getAll(userId);
     }
 
     @RequestMapping("/save")
-    DigitalSign saveUser(
+    DocumentsSigned saveDS(
             @RequestParam(required = false) String id,
-            @RequestParam(required = false) String data,
-            @RequestParam(required = false) String owner,
-            @RequestParam(required = false) List<String> listMembers)
-            //@RequestParam(required = false) String sex,
-            //@RequestParam(required = false) String civilState)
-            {
+            @RequestParam(required = false) String dados,
+            @RequestParam(required = false) String userIdOwner,
+           @RequestParam(required = false) List<String> listUserMembers
+            ) {
 
-        DigitalSign digitalSign = new DigitalSign();
+        DocumentsSigned documentsSigned = new DocumentsSigned();
 
-        if (id != null) {
-            digitalSign = digitalSignService.getById(id);
-        }
-        digitalSign.setData(data);
-        digitalSign.setUserIdOwner(owner);
-        digitalSign.setListUserMembers(listMembers);
-        //userIdentity.setSex(sex);
-        //userIdentity.setCivilState(civilState);
-        digitalSignService.save(digitalSign);
+        /*if (id != null) {
+            userIdentity = digitalSignService.getById(id);
+        }*/
+        documentsSigned.setDados(dados);
+        documentsSigned.setUserIdOwner(userIdOwner);
+        documentsSigned.setListUserMembers(listUserMembers);
+        digitalSignService.save(documentsSigned);
 
-        return digitalSign;
+        return documentsSigned;
     }
 
     @RequestMapping("/delete")
-    String deleteDigitalSign(@RequestParam String id) {
-        digitalSignService.delete(id);
-        return id;
+    String deleteDS(@RequestParam String dsId,
+                    @RequestParam String userId) {
+        digitalSignService.delete(userId, dsId);
+        return dsId;
     }
 
     @RequestMapping("/query")
-    List<DigitalSign> queryDigitalSign(@RequestParam(required = false) String type){
+    List<DocumentsSigned> queryDS(@RequestParam(required = false) String type,
+                                  @RequestParam String userId){
         RichQuery query = new RichQuery();
         Map<String, Object> selector = new HashMap<>();
         if(type != null && !type.isEmpty()){
-            selector.put("typeDoc","usersDoc");
+            selector.put("typeDoc","DocsCreated");
             query.setSelector(selector);
 
 
         }
-        return digitalSignService.query(query);
+        return digitalSignService.query(query, userId);
     }
 
 }
