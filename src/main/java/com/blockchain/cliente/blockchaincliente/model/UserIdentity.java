@@ -15,9 +15,8 @@ public class UserIdentity implements Serializable {
 
     private String id;
     private String name;
-    private String dateOfBirth;
+    private String password;
     private String cpf;
-    private String civilState;
     private final String typeDoc = "usersDoc";
 
     public String getId() {
@@ -27,6 +26,7 @@ public class UserIdentity implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
     public String getName() {
         return name;
     }
@@ -35,12 +35,12 @@ public class UserIdentity implements Serializable {
         this.name = name;
     }
 
-    public String getDateOfBirth() {
-        return dateOfBirth;
+    public String getPassword() {
+        return password;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getCpf() {
@@ -55,34 +55,23 @@ public class UserIdentity implements Serializable {
         return typeDoc;
     }
 
-   // public void setSex(String sex) {
-   //     this.sex = sex;
-   // }
 
-    public String getCivilState() {
-        return civilState;
-    }
-
-    public void setCivilState(String civilState) {
-        this.civilState = civilState;
-    }
-
-    public String toJSONString(){
+    public String toJSONString() {
         ObjectMapper mapper = new ObjectMapper();
-        try{
+        try {
             return mapper.writeValueAsString(this);
-        }catch (JsonProcessingException ex){
+        } catch (JsonProcessingException ex) {
             Logger.getLogger(UserIdentity.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    public UserIdentity fromJSONString(String json){
+    public UserIdentity fromJSONString(String json) {
         ObjectMapper mapper = new ObjectMapper();
         UserIdentity userIdentity = null;
-        try{
+        try {
             userIdentity = mapper.readValue(json, UserIdentity.class);
-        }catch (JsonProcessingException ex){
+        } catch (JsonProcessingException ex) {
             Logger.getLogger(UserIdentity.class.getName()).log(Level.SEVERE, null, ex);
         }
         return userIdentity;

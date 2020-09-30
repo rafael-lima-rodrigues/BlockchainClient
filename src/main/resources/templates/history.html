@@ -8,21 +8,21 @@
 <div class="container">
     <div th:if="${#lists.isEmpty(history)}"> No transactions found!</div>
     <div th:if="${not #lists.isEmpty(history)}">
-        <h2>Fish</h2>
+        <h2>User</h2>
         <table class="table table-striped">
             <tr>
-                <th>Type</th>
-                <th>Weight</th>
-                <th>Price</th>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
                 <th>Transaction ID</th>
                 <th>Time</th>
                 <th>Creator MSP</th>
                 <th>Creator Signature</th>
             </tr>
             <tr th:each="historys : ${history}">
-                <td th:text="${historys.asset.id}">Salmon</td>
-                <td th:text="${historys.asset.name}">2</td>
-                <td th:text="${historys.asset.dateOfBirth}">3</td>
+                <td th:text="${historys.asset.id}"></td>
+                <td th:text="${historys.asset.name}"></td>
+                <td th:text="${historys.asset.cpf}"></td>
                 <td th:text="${historys.transactionId}">123456789</td>
                <!-- <td th:text="${#dates.format(new java.util.Date(historys.timeStamp), 'dd/MM/yyyy - HH:mm')}">123456789</td> -->
                 <td th:text="${historys.creatorMspId}">Org1MSP</td>

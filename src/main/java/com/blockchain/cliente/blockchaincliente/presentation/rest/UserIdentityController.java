@@ -6,6 +6,7 @@ import com.blockchain.cliente.blockchaincliente.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -33,10 +34,9 @@ public class UserIdentityController {
     UserIdentity saveUser(
             @RequestParam(required = false) String id,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String dateOfBirth,
-            @RequestParam(required = false) String cpf,
-            //@RequestParam(required = false) String sex,
-            @RequestParam(required = false) String civilState) {
+            @RequestParam(required = false) String password,
+            @RequestParam(required = false) String cpf
+            ) {
 
         UserIdentity userIdentity = new UserIdentity();
 
@@ -44,10 +44,8 @@ public class UserIdentityController {
             userIdentity = userService.getById(id);
         }
         userIdentity.setName(name);
-        userIdentity.setDateOfBirth(dateOfBirth);
+        userIdentity.setPassword(password);
         userIdentity.setCpf(cpf);
-        //userIdentity.setSex(sex);
-        userIdentity.setCivilState(civilState);
         userService.save(userIdentity);
 
         return userIdentity;

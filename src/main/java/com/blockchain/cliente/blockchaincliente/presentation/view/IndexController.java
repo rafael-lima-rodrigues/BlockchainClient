@@ -97,10 +97,9 @@ public class IndexController {
     public String saveUser(
             @RequestParam String id,
             @RequestParam String name,
-            @RequestParam String dateOfBirth,
-            @RequestParam String cpf,
-            //  @RequestParam String sex,
-            @RequestParam String civilState
+            @RequestParam String password,
+            @RequestParam String cpf
+
     ) {
 
         UserIdentity userIdentity = new UserIdentity();
@@ -111,10 +110,10 @@ public class IndexController {
         }
 
         userIdentity.setName(name);
-        userIdentity.setDateOfBirth(dateOfBirth);
+        userIdentity.setPassword(password);
         userIdentity.setCpf(cpf);
 
-        userIdentity.setCivilState(civilState);
+       // userIdentity.se(civilState);
         userService.save(userIdentity);
 
         return "redirect:/products";
