@@ -2,12 +2,9 @@ package com.blockchain.cliente.blockchaincliente.service.implent;
 
 import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
-import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.blockchain.cliente.blockchaincliente.persistence.DigitalSignDAO;
-import com.blockchain.cliente.blockchaincliente.persistence.UserDAO;
 import com.blockchain.cliente.blockchaincliente.service.DigitalSignService;
-import com.blockchain.cliente.blockchaincliente.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +17,8 @@ public class DigitalSignServiceImpl implements DigitalSignService {
     DigitalSignDAO digitalSignDAO;
 
     @Override
-    public DocumentsSigned getById(String id, String userId) {
-        return digitalSignDAO.getbyId(id,userId);
+    public DocumentsSigned getById(String id) {
+        return digitalSignDAO.getbyId(id);
     }
 
     @Override
@@ -30,23 +27,23 @@ public class DigitalSignServiceImpl implements DigitalSignService {
     }
 
     @Override
-    public void update(String key, String userId, DocumentsSigned documentsSigned) {
-       digitalSignDAO.update(key, userId, documentsSigned);
+    public void update(String key, DocumentsSigned documentsSigned) {
+       digitalSignDAO.update(key, documentsSigned);
     }
 
     @Override
-    public List<DocumentsSigned> query(RichQuery query, String userId) {
-        return digitalSignDAO.query(query, userId);
+    public List<DocumentsSigned> query(RichQuery query) {
+        return digitalSignDAO.query(query);
     }
 
     @Override
-    public void delete(String userId, String documentId) {
-        digitalSignDAO.delete(userId,documentId);
+    public void delete(String id) {
+        digitalSignDAO.delete(id);
     }
 
     @Override
-    public List<DocumentsSigned> getAll(String userId) {
-        return digitalSignDAO.getAll(userId);
+    public List<DocumentsSigned> getAll() {
+        return digitalSignDAO.getAll();
     }
 
     @Override

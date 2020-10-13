@@ -1,10 +1,9 @@
 package com.blockchain.cliente.blockchaincliente.presentation.rest;
 
+import com.blockchain.cliente.blockchaincliente.config.BlockchainNetworkAttributes;
 import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
-import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.blockchain.cliente.blockchaincliente.service.DigitalSignService;
-import com.blockchain.cliente.blockchaincliente.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,20 +23,20 @@ public class DigitalSignController {
     @RequestMapping("/get")
     DocumentsSigned getDS(@RequestParam String id,
                           @RequestParam String userId) {
-        return digitalSignService.getById(id,userId);
+        return digitalSignService.getById(id);
     }
 
     @RequestMapping("/getAll")
     List<DocumentsSigned> getAllDS(@RequestParam String userId) {
-        return digitalSignService.getAll(userId);
+        return digitalSignService.getAll();
     }
 
     @RequestMapping("/save")
     DocumentsSigned saveDS(
             @RequestParam(required = false) String id,
             @RequestParam(required = false) String dados,
-            @RequestParam(required = false) String userIdOwner,
-           @RequestParam(required = false) List<String> listUserMembers
+            @RequestParam(required = false) String userIdOwner
+            //@RequestParam(required = false) Boolean sign
             ) {
 
         DocumentsSigned documentsSigned = new DocumentsSigned();
@@ -47,16 +46,15 @@ public class DigitalSignController {
         }*/
         documentsSigned.setDados(dados);
         documentsSigned.setUserIdOwner(userIdOwner);
-        documentsSigned.setListUserMembers(listUserMembers);
+        documentsSigned.addMemberSign(BlockchainNetworkAttributes.ORG1_NAME, true);
         digitalSignService.save(documentsSigned);
 
         return documentsSigned;
     }
 
     @RequestMapping("/delete")
-    String deleteDS(@RequestParam String dsId,
-                    @RequestParam String userId) {
-        digitalSignService.delete(userId, dsId);
+    String deleteDS(@RequestParam String dsId) {
+        digitalSignService.delete(dsId);
         return dsId;
     }
 
@@ -71,7 +69,7 @@ public class DigitalSignController {
 
 
         }
-        return digitalSignService.query(query, userId);
+        return digitalSignService.query(query);
     }
 
 }

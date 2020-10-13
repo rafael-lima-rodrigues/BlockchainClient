@@ -2,7 +2,6 @@ package com.blockchain.cliente.blockchaincliente.util;
 
 import com.blockchain.cliente.blockchaincliente.config.BlockchainNetworkAttributes;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
-import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

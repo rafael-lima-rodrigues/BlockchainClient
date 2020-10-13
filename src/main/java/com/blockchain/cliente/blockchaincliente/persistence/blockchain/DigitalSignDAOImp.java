@@ -2,11 +2,8 @@ package com.blockchain.cliente.blockchaincliente.persistence.blockchain;
 
 import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
-import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.blockchain.cliente.blockchaincliente.persistence.DigitalSignDAO;
-import com.blockchain.cliente.blockchaincliente.persistence.UserDAO;
-import com.blockchain.cliente.blockchaincliente.util.IChaincodeExecuter;
 import com.blockchain.cliente.blockchaincliente.util.IChaincodeExecuterDS;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,9 +34,9 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
     Channel channel;
 
     @Override
-    public DocumentsSigned getbyId(String id, String userId) {
+    public DocumentsSigned getbyId(String id) {
         String key = String.valueOf(id);
-        String json = chaincodeExecuterDS.getObjectByKey(key, userId);
+        String json = chaincodeExecuterDS.getObjectByKey(key);
         DocumentsSigned documentsSigned = null;
         if (json != null && !json.isEmpty()) {
             try {
@@ -53,30 +50,28 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
 
     @Override
     public void save(DocumentsSigned documentsSigned) {
-
-            documentsSigned.setId(UUID.randomUUID().toString());
             chaincodeExecuterDS.save(documentsSigned.getId(), documentsSigned);
 
 //        String key = UUID.randomUUID().toString();
     }
 
     @Override
-    public void update(String key, String userId, DocumentsSigned documentsSigned) {
-        chaincodeExecuterDS.update(key, userId,documentsSigned);
+    public void update(String key, DocumentsSigned documentsSigned) {
+        chaincodeExecuterDS.update(key, documentsSigned);
 
     }
 
-    public void update(DocumentsSigned documentsSigned, String userId){
+ /*   public void update(DocumentsSigned documentsSigned, String userId){
         chaincodeExecuterDS.update(documentsSigned.getId(), userId, documentsSigned);
-    }
+    }*/
 
     @Override
-    public List<DocumentsSigned> query(RichQuery query, String userId) {
+    public List<DocumentsSigned> query(RichQuery query) {
         List<DocumentsSigned> documentsSignedList = new ArrayList<>();
         TypeReference<List<DocumentsSigned>> listType = new TypeReference<List<DocumentsSigned>>() {
         };
 
-        String json = chaincodeExecuterDS.query(query, userId);
+        String json = chaincodeExecuterDS.query(query);
         try {
             documentsSignedList = objectMapper.readValue(json, listType);
         } catch (IOException ex) {
@@ -86,13 +81,13 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
     }
 
     @Override
-    public void delete(String idUser, String idDocument) {
+    public void delete(String id) {
 
-        chaincodeExecuterDS.deleteObject(idUser,String.valueOf(idDocument));
+        chaincodeExecuterDS.deleteObject(id);
     }
 
     @Override
-    public List<DocumentsSigned> getAll(String userId) {
+    public List<DocumentsSigned> getAll() {
         List<DocumentsSigned> documentsSignedList = new ArrayList<>();
         TypeReference<List<DocumentsSigned>> listType = new TypeReference<List<DocumentsSigned>>() {
         };
@@ -102,7 +97,7 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
         selector.put("typeDoc", "DocsCreated");
         query.setSelector(selector);
 
-        String json = chaincodeExecuterDS.query(query, userId);
+        String json = chaincodeExecuterDS.query(query);
         try {
             documentsSignedList = objectMapper.readValue(json, listType);
         } catch (IOException ex) {
@@ -129,6 +124,7 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
                         String mspId = envelopeInfo.getCreator().getMspid();
                         history.setCreatorId(creator);
                         history.setCreatorMspId(mspId);
+
                     }
                 }
             } catch (IOException ex) {

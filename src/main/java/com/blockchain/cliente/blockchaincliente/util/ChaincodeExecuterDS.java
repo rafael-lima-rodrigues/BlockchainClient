@@ -3,7 +3,6 @@ package com.blockchain.cliente.blockchaincliente.util;
 import com.blockchain.cliente.blockchaincliente.config.BlockchainNetworkAttributes;
 import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
-import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -30,7 +29,7 @@ import java.util.logging.Logger;
 public class ChaincodeExecuterDS implements IChaincodeExecuterDS {
 
     private ChaincodeID chaincodeID;
-    private final long waitTime = 2000;
+    private final long waitTime = 5000;
 
     @Autowired
     @Qualifier("channel1")
@@ -132,10 +131,10 @@ public class ChaincodeExecuterDS implements IChaincodeExecuterDS {
         return result;
     }
 
-    public String update(String key, String userId, DocumentsSigned documentsSigned) {
+    public String update(String key,  DocumentsSigned documentsSigned) {
 
         String result = "";
-        String[] args = {key, userId, documentsSigned.toJSONString()};
+        String[] args = {key, documentsSigned.toJSONString()};
 
         try {
             result = executeTransactionDS(true, "updateDigitalSign", args);
@@ -146,9 +145,9 @@ public class ChaincodeExecuterDS implements IChaincodeExecuterDS {
         return result;
     }
 
-    public String getObjectByKey(String key, String userId) {
+    public String getObjectByKey(String key) {
         String result = "";
-        String[] args = {key, userId};
+        String[] args = {key};
         try {
             result = executeTransactionDS(false, "readDigitalSign", args);
         } catch (InvalidArgumentException | ProposalException ex) {
@@ -157,7 +156,7 @@ public class ChaincodeExecuterDS implements IChaincodeExecuterDS {
         return result;
     }
 
-    public String deleteObject(String userId, String key) {
+    public String deleteObject(String key) {
         String result = "";
         String[] args = {key};
         try {
@@ -169,10 +168,10 @@ public class ChaincodeExecuterDS implements IChaincodeExecuterDS {
         return result;
     }
 
-    public String query(RichQuery query, String userId) {
+    public String query(RichQuery query) {
         String result = "";
         try {
-            String[] args = {objectMapper.writeValueAsString(query), userId};
+            String[] args = {objectMapper.writeValueAsString(query)};
             result = executeTransactionDS(false, "queryDS", args);
         } catch (InvalidArgumentException | ProposalException | JsonProcessingException ex) {
             Logger.getLogger(ChaincodeExecuterDS.class.getName()).log(Level.SEVERE, null, ex);

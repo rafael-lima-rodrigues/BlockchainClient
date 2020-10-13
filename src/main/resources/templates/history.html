@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <title>Fish overview</title>
+    <title>Historico do Documento</title>
     <th:block th:include="layout/header"></th:block>
 </head>
 <body>
 <div class="container">
     <div th:if="${#lists.isEmpty(history)}"> No transactions found!</div>
     <div th:if="${not #lists.isEmpty(history)}">
-        <h2>User</h2>
+        <h2>Documento</h2>
         <table class="table table-striped">
             <tr>
                 <th>ID</th>
-                <th>Nome</th>
-                <th>CPF</th>
+                <th>Dados</th>
+                <th>Owner</th>
                 <th>Transaction ID</th>
                 <th>Time</th>
                 <th>Creator MSP</th>
@@ -21,12 +21,12 @@
             </tr>
             <tr th:each="historys : ${history}">
                 <td th:text="${historys.asset.id}"></td>
-                <td th:text="${historys.asset.name}"></td>
-                <td th:text="${historys.asset.cpf}"></td>
-                <td th:text="${historys.transactionId}">123456789</td>
-               <!-- <td th:text="${#dates.format(new java.util.Date(historys.timeStamp), 'dd/MM/yyyy - HH:mm')}">123456789</td> -->
-                <td th:text="${historys.creatorMspId}">Org1MSP</td>
-                <td th:text="${historys.creatorId}">--Certificate--</td>
+                <td th:text="${historys.asset.dados}"></td>
+                <td th:text="${historys.asset.userIdOwner}"></td>
+                <td th:text="${historys.transactionId}"></td>
+                <td th:text="${#temporals.formatISO(historys.timeStamp)}">123456789</td>
+                <td th:text="${historys.creatorMspId}"></td>
+                <td th:text="${historys.creatorId}"></td>
 
             </tr>
         </table>

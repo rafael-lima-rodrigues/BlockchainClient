@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,16 +15,15 @@ public class DocumentsSigned implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id;
+    private String descricao;
     private String dados;
     private String userIdOwner;
     private final String typeDoc = "DocsCreated";
 
-//private final String typeDoc = "DocSigned";
+    private Map<String,Boolean> sign = new HashMap<>();
 
-    private List<String> listUserMembers = new ArrayList<>();
-
-    public void addMember(String member){
-        this.listUserMembers.add(member);
+    public void addMemberSign(String member, boolean sign){
+        this.sign.put(member, sign);
     }
 
     public String getId() {
@@ -59,16 +58,13 @@ public class DocumentsSigned implements Serializable {
        // return typeDoc;
     //}
 
-    public List<String> getListUserMembers() {
-        return listUserMembers;
+    public Map<String, Boolean> getSign() {
+        return sign;
     }
 
-    public void setListUserMembers(List<String> listUserMembers) {
-        this.listUserMembers = listUserMembers;
+    public void setSign(Map<String, Boolean> sign) {
+        this.sign = sign;
     }
-    /*public void setListUserMembers(String userId){
-        this.listUserMembers.add(userId);
-    }*/
 
     public String toJSONString(){
         ObjectMapper mapper = new ObjectMapper();

@@ -4,14 +4,12 @@ package com.blockchain.cliente.blockchaincliente.config;
 import com.blockchain.cliente.blockchaincliente.user.FabricUserContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.hyperledger.fabric.sdk.Channel;
-import org.hyperledger.fabric.sdk.Enrollment;
-import org.hyperledger.fabric.sdk.HFClient;
-import org.hyperledger.fabric.sdk.NetworkConfig;
+import org.hyperledger.fabric.sdk.*;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.NetworkConfigurationException;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
+import org.hyperledger.fabric_ca.sdk.RegistrationRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +25,7 @@ import java.util.logging.Logger;
 @Configuration
 public class NetworkConfigBlockchain {
 
-    @Value("classpath:connectiondetails/connection-profile.json")
+    @Value("classpath:connectiondetails/2PeersOrg2Connection.json")
     private transient Resource connectionFile;
 
     /**
@@ -78,9 +76,22 @@ public class NetworkConfigBlockchain {
                 BlockchainNetworkAttributes.ADMIN_NAME,
                 BlockchainNetworkAttributes.ADMIN_PASSWORD);
         adminUserContext.setEnrollment(adminEnrollment);
-
         return adminUserContext;
     }
+   /* @Bean(name = "NewUserContext")
+    public  FabricUserContext enrollUser() throws Exception {
+        FabricUserContext userContext = new FabricUserContext();
+        String name = BlockchainNetworkAttributes.USER_NAME;
+        userContext.setName(name);
+        userContext.setAffiliation(BlockchainNetworkAttributes.ORG1_NAME);
+        userContext.setMspId(BlockchainNetworkAttributes.ORG1_MSP);
+        RegistrationRequest rr = new RegistrationRequest(name, BlockchainNetworkAttributes.ORG1_NAME);
+
+        String secret = createCAClient().register(rr, enrollAdmin());
+        Enrollment enrollment = createCAClient().enroll(userContext.getName(), secret);
+        userContext.setEnrollment(enrollment);
+        return userContext;
+    }*/
 
     @Bean
     public HFClient createHfClient() throws Exception {
@@ -95,6 +106,7 @@ public class NetworkConfigBlockchain {
     @Bean(name = "channel1")
     public Channel createChannel1() throws Exception {
         HFClient hfClient = createHfClient();
+        //hfClient.setUserContext(enrollUser());
         Channel newChannel = hfClient.loadChannelFromConfig(
                 BlockchainNetworkAttributes.CHANNEL_1_NAME,
                 createNetworkConfig());

@@ -1,32 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <title>Fish overview</title>
+    <title>Documentos</title>
     <th:block th:include="layout/header"></th:block>
 </head>
 <body>
 <div class="container">
-    <div th:if="${#lists.isEmpty(docs)}"> No fish found!</div>
+    <div th:if="${#lists.isEmpty(docs)}"> No documents found!</div>
     <div th:if="${not #lists.isEmpty(docs)}">
-        <h2>Fish</h2>
+        <h2>Lista de Documentos</h2>
         <table class="table table-striped">
             <tr>
                 <th>ID</th>
                 <th>Dados</th>
                 <th>Owner</th>
                 <th>Member</th>
-                <th>Edit</th>
-                <th>Delete</th>
-                <th>History</th>
+                <th>Assinar</th>
+                <th>Editar</th>
+                <th>Apagar</th>
+                <th>Historico</th>
             </tr>
             <tr th:each="documentsSigned : ${docs}">
-                <td th:text="${documentsSigned.id}">Salmon</td>
-                <td th:text="${documentsSigned.dados}">2</td>
-                <td th:text="${documentsSigned.userIdOwner}">3</td>
-                <td th:text="${documentsSigned.listUserMembers}">3</td>
-                <td><a th:href="${'/blockchain/listDocs/edit?id=' + documentsSigned.id}" class="btn btn-default">Edit</a></td>
-                <td><a th:href="${'/blockchain/listDocs/delete?id=' + documentsSigned.id}" class="btn btn-danger">Delete</a></td>
-                <td><a th:href="${'/blockchain/listDocs/history?id=' + documentsSigned.id}" class="btn btn-default">Historico</a></td>
+                <td th:text="${documentsSigned.id}"></td>
+                <td th:text="${documentsSigned.dados}" class="col-sm-2"></td>
+                <td th:text="${documentsSigned.userIdOwner}"></td>
+                <td>
+                    <ul>
+                        <li th:each="entry: ${documentsSigned.sign}">
+                            <span th:text="${entry.key}"/> <span class="glyphicon glyphicon-ok"/>
+                        </li>
+                    </ul>
+                </td>
+                <!--<td th:text="${documentsSigned.sign}"></td>-->
+                <td><a th:href="${'/blockchain/listDocs/assinar?id=' + documentsSigned.id}" class="btn btn-primary">Assinar</a>
+                </td>
+                <td><a th:href="${'/blockchain/listDocs/edit?id=' + documentsSigned.id}"
+                       class="btn btn-default">Edit</a></td>
+                <td><a th:href="${'/blockchain/listDocs/delete?id=' + documentsSigned.id}"
+                       class="btn btn-danger">Delete</a></td>
+                <td><a th:href="${'/blockchain/listDocs/history?id=' + documentsSigned.id}" class="btn btn-default">Historico</a>
+                </td>
             </tr>
         </table>
     </div>

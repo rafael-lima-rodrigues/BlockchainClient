@@ -2,7 +2,6 @@ package com.blockchain.cliente.blockchaincliente.util;
 
 import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
-import com.blockchain.cliente.blockchaincliente.model.UserIdentity;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.ProposalException;
@@ -13,10 +12,10 @@ public interface IChaincodeExecuterDS {
 
     String save(String key, DocumentsSigned documentsSigned);
     String executeTransactionDS(boolean invoke, String func, String[] args) throws InvalidArgumentException, ProposalException;
-    public String update(String key, String userId, DocumentsSigned  newDocument);
-    public String getObjectByKey(String digitalSignId, String userId);
-    public String deleteObject(String userId, String digitalSignId);
-    public String query(RichQuery query, String userId);
+    public String update(String key, DocumentsSigned  newDocument);
+    public String getObjectByKey(String digitalSignId);
+    public String deleteObject(String id);
+    public String query(RichQuery query);
     public List<TransactionHistory> getHistory(String key);
 
 
