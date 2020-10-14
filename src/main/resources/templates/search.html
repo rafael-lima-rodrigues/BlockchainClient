@@ -1,22 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <title>Look for User</title>
+    <title>Buscar Documento</title>
     <th:block th:include="layout/header"></th:block>
 </head>
 <body>
 <div class="container">
-    <h2>Look for User</h2>
+    <h2>Buscar Documento</h2>
     <div>
         <form class="form-horizontal" th:object="${docs}" th:action="@{/documents/query}" method="post">
             <div class="form-group">
-                <label class="col-sm-2 control-label">ID</label>
-                <div class="col-sm-10">
+                <label class="col-sm-2 control-label" >ID:</label>
+                <div class="col-sm-6">
                     <input type="text" class="form-control" th:field="*{id}"/>
-                </div>
-                <label class="col-sm-2 control-label">Owner</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" th:field="*{userIdOwner}"/>
                 </div>
             </div>
 

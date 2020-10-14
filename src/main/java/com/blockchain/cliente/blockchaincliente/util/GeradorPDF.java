@@ -58,7 +58,7 @@ public class GeradorPDF {
                             BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
             cb.beginText();
             cb.setFontAndSize(bf, 7);
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "ID" + documentId, width / 2, 100, 0);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "ID: " + documentId, width / 2, 100, 0);
             cb.showTextAligned(PdfContentByte
                     .ALIGN_RIGHT, "page " + p + " of " + ((n / 2) + (n % 2 >
                     0 ? 1 : 0)), width, 40, 0);
@@ -67,7 +67,7 @@ public class GeradorPDF {
         document.close();
     }
 
-    public void editarPdf(String id, String publicKey, String signature) throws IOException, DocumentException {
+    public void editarPdf(String id, String publicKey, String signature, String hash) throws IOException, DocumentException {
         PdfReader reader = new PdfReader(UPLOAD_DIR + id);
         int n = reader.getNumberOfPages();
 
@@ -101,8 +101,9 @@ public class GeradorPDF {
             cb.beginText();
             cb.setFontAndSize(bf, 7);
             //cb.showTextAligned(PdfContentByte.ALIGN_CENTER,"ID"+documentId,width/2,120,0);
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "Signature: " + signature, width / 2, 90, 0);
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "chave: " + publicKey, width / 2, 80, 0);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "chave: " + publicKey, width / 2, 90, 0);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "Hash: " + publicKey, width / 2, 80, 0);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "Signature: " + signature, width / 2, 70, 0);
             /*cb.showTextAligned(PdfContentByte
                     .ALIGN_CENTER, "page " + p + " of " + ((n / 2) + (n % 2 >
                     0 ? 1 : 0)), width / 2, 40, 0);*/

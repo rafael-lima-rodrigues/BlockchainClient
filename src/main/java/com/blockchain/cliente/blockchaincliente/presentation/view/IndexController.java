@@ -47,7 +47,7 @@ public class IndexController {
     }
 
     @RequestMapping("/documents/save")
-    public String createDs(@RequestParam MultipartFile dados, Model model) {
+    public String createDs(@RequestParam MultipartFile dados, @RequestParam String descricao, Model model) {
         DocumentsSigned documentsSigned = new DocumentsSigned();
         GeradorPDF geradorPDF = new GeradorPDF();
 
@@ -59,6 +59,7 @@ public class IndexController {
             String encoded = Base64.getEncoder().encodeToString(message);
 
             documentsSigned.setDados(encoded);
+            documentsSigned.setDescricao(descricao);
             documentsSigned.setId(UUID.randomUUID().toString());
             documentsSigned.setUserIdOwner(BlockchainNetworkAttributes.ORG1_NAME);
             digitalSignService.save(documentsSigned);
@@ -72,13 +73,13 @@ public class IndexController {
         return "redirect:/document/list";
     }
 
-    @RequestMapping("/listDocs/edit")
+    @RequestMapping("/document/get")
     public String editDS(@RequestParam String id,
                          Model model) {
         model.addAttribute(
                 "documentsSigned",
                 digitalSignService.getById(id));
-        return "edit";
+        return "view";
     }
 
     @RequestMapping("/listDocs/assinar")
@@ -113,12 +114,14 @@ public class IndexController {
     public String saveDs(
             @RequestParam String id,
             @RequestParam String dados,
+            @RequestParam String descricao,
             @RequestParam String userIdOwner,
             @RequestParam Boolean sign, Model model
     ) {
 
         DocumentsSigned documentsSigned = digitalSignService.getById(id);
 
+        documentsSigned.setDescricao(descricao);
         documentsSigned.setDados(dados);
         documentsSigned.setUserIdOwner(userIdOwner);
 
@@ -144,7 +147,7 @@ public class IndexController {
 
             documentsSigned.addMemberSign(BlockchainNetworkAttributes.ORG1_NAME, true);
             digitalSignService.update(id, documentsSigned);
-            geradorPDF.editarPdf(id, publicKey, signature);
+            geradorPDF.editarPdf(id, publicKey, signature, documentsSigned.getDados());
 
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
                 InvalidKeyException | SignatureException |
@@ -186,15 +189,15 @@ public class IndexController {
     @RequestMapping("/documents/query")
     public String queryDS(
             @RequestParam(required = false) String id,
-            @RequestParam(required = false) String userIdOwner, Model model) {
+            @RequestParam(required = false) String descricao, Model model) {
 
         RichQuery query = new RichQuery();
         Map<String, Object> selector = new HashMap<>();
         if (id != null && !id.isEmpty()) {
             selector.put("id", id);
         }
-        if (userIdOwner != null && !userIdOwner.isEmpty()) {
-            selector.put("userIdOwner", userIdOwner);
+        if (descricao != null && !descricao.isEmpty()) {
+            selector.put("descricao", descricao);
         }
 
         query.setSelector(selector);

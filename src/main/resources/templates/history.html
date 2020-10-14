@@ -8,11 +8,12 @@
 <div class="container">
     <div th:if="${#lists.isEmpty(history)}"> No transactions found!</div>
     <div th:if="${not #lists.isEmpty(history)}">
-        <h2>Documento</h2>
+        <h2>Historico</h2>
         <table class="table table-striped">
             <tr>
                 <th>ID</th>
                 <th>Dados</th>
+                <th>Descricao</th>
                 <th>Owner</th>
                 <th>Transaction ID</th>
                 <th>Time</th>
@@ -21,6 +22,7 @@
             </tr>
             <tr th:each="historys : ${history}">
                 <td th:text="${historys.asset.id}"></td>
+                <td th:text="${historys.asset.descricao}"></td>
                 <td th:text="${historys.asset.dados}"></td>
                 <td th:text="${historys.asset.userIdOwner}"></td>
                 <td th:text="${historys.transactionId}"></td>

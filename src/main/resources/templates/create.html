@@ -11,6 +11,12 @@
         <form class="form-horizontal" th:object="${documentsSigned}" th:action="@{/documents/save}" enctype="multipart/form-data" method="post">
 
             <div class="form-group">
+                <label class="col-sm-2 control-label">Descrição: </label>
+                <div class="col-sm-6" >
+                    <input type="text" class="form-control" th:field="*{descricao}" />
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-2 control-label">Dados</label>
                 <div class="col-sm-6" >
                     <input type="file" class="form-control" th:field="*{dados}" />

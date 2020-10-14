@@ -21,8 +21,7 @@ public class DigitalSignController {
     DigitalSignService digitalSignService;
 
     @RequestMapping("/get")
-    DocumentsSigned getDS(@RequestParam String id,
-                          @RequestParam String userId) {
+    DocumentsSigned getDS(@RequestParam String id){
         return digitalSignService.getById(id);
     }
 
@@ -34,6 +33,7 @@ public class DigitalSignController {
     @RequestMapping("/save")
     DocumentsSigned saveDS(
             @RequestParam(required = false) String id,
+            @RequestParam(required = false) String descricao,
             @RequestParam(required = false) String dados,
             @RequestParam(required = false) String userIdOwner
             //@RequestParam(required = false) Boolean sign
@@ -41,9 +41,7 @@ public class DigitalSignController {
 
         DocumentsSigned documentsSigned = new DocumentsSigned();
 
-        /*if (id != null) {
-            userIdentity = digitalSignService.getById(id);
-        }*/
+        documentsSigned.setDescricao(descricao);
         documentsSigned.setDados(dados);
         documentsSigned.setUserIdOwner(userIdOwner);
         documentsSigned.addMemberSign(BlockchainNetworkAttributes.ORG1_NAME, true);
