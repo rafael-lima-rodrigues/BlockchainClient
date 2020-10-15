@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 @Configuration
 public class NetworkConfigBlockchain {
 
-    @Value("classpath:connectiondetails/2PeersOrg2Connection.json")
+    @Value("classpath:connectiondetails/2PeersOrg1Connection.json")
     private transient Resource connectionFile;
 
     /**

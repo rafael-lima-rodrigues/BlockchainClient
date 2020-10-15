@@ -2,9 +2,9 @@ package com.blockchain.cliente.blockchaincliente.config;
 
 public class BlockchainNetworkAttributes {
 
-    public static final String ORG1_MSP = "Org2MSP";
+    public static final String ORG1_MSP = "Org1MSP";
 
-    public static final String ORG1_NAME = "org2";
+    public static final String ORG1_NAME = "org1";
 
     public static final String ADMIN_NAME = "admin";
 
