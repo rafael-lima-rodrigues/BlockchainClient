@@ -102,7 +102,7 @@ public class GeradorPDF {
             cb.setFontAndSize(bf, 7);
             //cb.showTextAligned(PdfContentByte.ALIGN_CENTER,"ID"+documentId,width/2,120,0);
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "chave: " + publicKey, width / 2, 90, 0);
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "Hash: " + publicKey, width / 2, 80, 0);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "Hash: " + hash, width / 2, 80, 0);
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "Signature: " + signature, width / 2, 70, 0);
             /*cb.showTextAligned(PdfContentByte
                     .ALIGN_CENTER, "page " + p + " of " + ((n / 2) + (n % 2 >

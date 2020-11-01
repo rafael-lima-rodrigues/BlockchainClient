@@ -12,8 +12,10 @@
         <table class="table table-striped">
             <tr>
                 <th>ID</th>
-                <th>Dados</th>
                 <th>Descricao</th>
+                <th>Dados</th>
+                <th>Assinatura</th>
+
                 <th>Owner</th>
                 <th>Transaction ID</th>
                 <th>Time</th>
@@ -24,6 +26,13 @@
                 <td th:text="${historys.asset.id}"></td>
                 <td th:text="${historys.asset.descricao}"></td>
                 <td th:text="${historys.asset.dados}"></td>
+                <td>
+                <ul>
+                    <li th:each="entry: ${historys.asset.sign}">
+                        <span th:text="${entry.key}"/> <span class="glyphicon glyphicon-ok"/>
+                    </li>
+                </ul>
+                </td>
                 <td th:text="${historys.asset.userIdOwner}"></td>
                 <td th:text="${historys.transactionId}"></td>
                 <td th:text="${#temporals.formatISO(historys.timeStamp)}">123456789</td>

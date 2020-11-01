@@ -78,20 +78,7 @@ public class NetworkConfigBlockchain {
         adminUserContext.setEnrollment(adminEnrollment);
         return adminUserContext;
     }
-   /* @Bean(name = "NewUserContext")
-    public  FabricUserContext enrollUser() throws Exception {
-        FabricUserContext userContext = new FabricUserContext();
-        String name = BlockchainNetworkAttributes.USER_NAME;
-        userContext.setName(name);
-        userContext.setAffiliation(BlockchainNetworkAttributes.ORG1_NAME);
-        userContext.setMspId(BlockchainNetworkAttributes.ORG1_MSP);
-        RegistrationRequest rr = new RegistrationRequest(name, BlockchainNetworkAttributes.ORG1_NAME);
 
-        String secret = createCAClient().register(rr, enrollAdmin());
-        Enrollment enrollment = createCAClient().enroll(userContext.getName(), secret);
-        userContext.setEnrollment(enrollment);
-        return userContext;
-    }*/
 
     @Bean
     public HFClient createHfClient() throws Exception {
