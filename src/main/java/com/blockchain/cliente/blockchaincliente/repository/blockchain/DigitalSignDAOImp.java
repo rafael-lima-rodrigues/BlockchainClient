@@ -1,10 +1,10 @@
-package com.blockchain.cliente.blockchaincliente.persistence.blockchain;
+package com.blockchain.cliente.blockchaincliente.repository.blockchain;
 
 import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
-import com.blockchain.cliente.blockchaincliente.persistence.DigitalSignDAO;
-import com.blockchain.cliente.blockchaincliente.util.IChaincodeExecuterDS;
+import com.blockchain.cliente.blockchaincliente.repository.DigitalSignDAO;
+import com.blockchain.cliente.blockchaincliente.util.ChaincodeExecuter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hyperledger.fabric.sdk.BlockInfo;
@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 public class DigitalSignDAOImp implements DigitalSignDAO {
 
     @Autowired
-    @Qualifier("DsExecuter")
-    IChaincodeExecuterDS chaincodeExecuterDS;
+    @Qualifier("Executer")
+    ChaincodeExecuter chaincodeExecuter;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -36,7 +36,7 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
     @Override
     public DocumentsSigned getbyId(String id) {
         String key = String.valueOf(id);
-        String json = chaincodeExecuterDS.getObjectByKey(key);
+        String json = chaincodeExecuter.getObjectByKey(key);
         DocumentsSigned documentsSigned = null;
         if (json != null && !json.isEmpty()) {
             try {
@@ -50,14 +50,14 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
 
     @Override
     public void save(DocumentsSigned documentsSigned) {
-            chaincodeExecuterDS.save(documentsSigned.getId(), documentsSigned);
+            chaincodeExecuter.save(documentsSigned);
 
 //        String key = UUID.randomUUID().toString();
     }
 
     @Override
     public void update(String key, DocumentsSigned documentsSigned) {
-        chaincodeExecuterDS.update(key, documentsSigned);
+        chaincodeExecuter.update(key, documentsSigned);
 
     }
 
@@ -71,7 +71,7 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
         TypeReference<List<DocumentsSigned>> listType = new TypeReference<List<DocumentsSigned>>() {
         };
 
-        String json = chaincodeExecuterDS.query(query);
+        String json = chaincodeExecuter.query(query);
         try {
             documentsSignedList = objectMapper.readValue(json, listType);
         } catch (IOException ex) {
@@ -83,7 +83,7 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
     @Override
     public void delete(String id) {
 
-        chaincodeExecuterDS.deleteObject(id);
+        chaincodeExecuter.deleteObject(id);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
         selector.put("typeDoc", "DocsCreated");
         query.setSelector(selector);
 
-        String json = chaincodeExecuterDS.query(query);
+        String json = chaincodeExecuter.query(query);
         try {
             documentsSignedList = objectMapper.readValue(json, listType);
         } catch (IOException ex) {
@@ -110,7 +110,7 @@ public class DigitalSignDAOImp implements DigitalSignDAO {
     @Override
     public List<TransactionHistory> getHistory(String id) {
         //  String key = String.valueOf(id);
-        List<TransactionHistory> list = chaincodeExecuterDS.getHistory(id);
+        List<TransactionHistory> list = chaincodeExecuter.getHistory(id);
         list.forEach((history) -> {
             try {
                 //String userString = objectMapper.writeValueAsString(history.getAsset());

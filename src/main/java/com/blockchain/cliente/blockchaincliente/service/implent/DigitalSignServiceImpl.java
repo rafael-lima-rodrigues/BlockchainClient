@@ -3,7 +3,7 @@ package com.blockchain.cliente.blockchaincliente.service.implent;
 import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
-import com.blockchain.cliente.blockchaincliente.persistence.DigitalSignDAO;
+import com.blockchain.cliente.blockchaincliente.repository.DigitalSignDAO;
 import com.blockchain.cliente.blockchaincliente.service.DigitalSignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

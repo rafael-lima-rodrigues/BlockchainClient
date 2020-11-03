@@ -1,4 +1,4 @@
-package com.blockchain.cliente.blockchaincliente.persistence;
+package com.blockchain.cliente.blockchaincliente.repository;
 
 import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
