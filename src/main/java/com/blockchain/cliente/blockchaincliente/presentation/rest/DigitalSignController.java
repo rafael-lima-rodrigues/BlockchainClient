@@ -1,7 +1,7 @@
 package com.blockchain.cliente.blockchaincliente.presentation.rest;
 
 import com.blockchain.cliente.blockchaincliente.config.BlockchainNetworkAttributes;
-import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
+import com.blockchain.cliente.blockchaincliente.model.DigitalDocument;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.blockchain.cliente.blockchaincliente.service.DigitalSignService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,33 +21,32 @@ public class DigitalSignController {
     DigitalSignService digitalSignService;
 
     @RequestMapping("/get")
-    DocumentsSigned getDS(@RequestParam String id){
+    DigitalDocument getDS(@RequestParam String id){
         return digitalSignService.getById(id);
     }
 
     @RequestMapping("/getAll")
-    List<DocumentsSigned> getAllDS(@RequestParam String userId) {
+    List<DigitalDocument> getAllDS(@RequestParam String userId) {
         return digitalSignService.getAll();
     }
 
     @RequestMapping("/save")
-    DocumentsSigned saveDS(
+    DigitalDocument saveDS(
             @RequestParam(required = false) String id,
-            @RequestParam(required = false) String descricao,
-            @RequestParam(required = false) String dados,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String data,
             @RequestParam(required = false) String userIdOwner
-            //@RequestParam(required = false) Boolean sign
             ) {
 
-        DocumentsSigned documentsSigned = new DocumentsSigned();
+        DigitalDocument digitalDocument = new DigitalDocument();
 
-        documentsSigned.setDescricao(descricao);
-        documentsSigned.setDados(dados);
-        documentsSigned.setUserIdOwner(userIdOwner);
-        documentsSigned.addMemberSign(BlockchainNetworkAttributes.ORG1_NAME, true);
-        digitalSignService.save(documentsSigned);
+        digitalDocument.setDescription(description);
+        digitalDocument.setDescription(data);
+        digitalDocument.setUserIdOwner(userIdOwner);
+        digitalDocument.addMemberSignature(BlockchainNetworkAttributes.ORG1_NAME, true);
+        digitalSignService.save(digitalDocument);
 
-        return documentsSigned;
+        return digitalDocument;
     }
 
     @RequestMapping("/delete")
@@ -57,7 +56,7 @@ public class DigitalSignController {
     }
 
     @RequestMapping("/query")
-    List<DocumentsSigned> queryDS(@RequestParam(required = false) String type,
+    List<DigitalDocument> queryDS(@RequestParam(required = false) String type,
                                   @RequestParam String userId){
         RichQuery query = new RichQuery();
         Map<String, Object> selector = new HashMap<>();

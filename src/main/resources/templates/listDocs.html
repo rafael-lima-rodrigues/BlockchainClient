@@ -12,33 +12,31 @@
         <table class="table table-striped">
             <tr>
                 <th>ID</th>
-                <th>Descricao</th>
+                <th>Description</th>
                 <th>Owner</th>
-                <th>Assinaturas</th>
+                <th>Signatures</th>
                 <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
             </tr>
-            <tr th:each="documentsSigned : ${docs}">
-                <td th:text="${documentsSigned.id}"></td>
-                <td th:text="${documentsSigned.descricao}" class="col-sm-2"></td>
-                <td th:text="${documentsSigned.userIdOwner}"></td>
+            <tr th:each="digitalDocument : ${docs}">
+                <td th:text="${digitalDocument.id}"></td>
+                <td th:text="${digitalDocument.description}" class="col-sm-2"></td>
+                <td th:text="${digitalDocument.userIdOwner}"></td>
                 <td>
                     <ul>
-                        <li th:each="entry: ${documentsSigned.sign}">
+                        <li th:each="entry: ${digitalDocument.signature}">
                             <span th:text="${entry.key}"/> <span class="glyphicon glyphicon-ok"/>
                         </li>
                     </ul>
                 </td>
-                <!--<td th:text="${documentsSigned.sign}"></td>-->
-                <td><a th:href="${'/blockchain/listDocs/assinar?id=' + documentsSigned.id}" class="btn btn-primary">Assinar</a>
+                <!--<td th:text="${digitalDocument.sign}"></td>-->
+                <td><a th:href="${'/blockchain/listDocs/sign?id=' + digitalDocument.id}" class="btn btn-primary">Assinar</a>
                 </td>
-                <td><a th:href="${'/blockchain/document/get?id=' + documentsSigned.id}"
-                       class="btn btn-default">Visualizar</a></td>
-                <td><a th:href="${'/blockchain/listDocs/delete?id=' + documentsSigned.id}"
-                       class="btn btn-danger">Apagar</a></td>
-                <td><a th:href="${'/blockchain/listDocs/history?id=' + documentsSigned.id}" class="btn btn-default">Historico</a>
+                <td><a th:href="${'/blockchain/document/get?id=' + digitalDocument.id}" class="btn btn-info">View</a></td>
+                <td><a th:href="${'/blockchain/listDocs/delete?id=' + digitalDocument.id}" class="btn btn-danger">Delete</a></td>
+                <td><a th:href="${'/blockchain/listDocs/history?id=' + digitalDocument.id}" class="btn btn-warning">Historico</a>
                 </td>
             </tr>
         </table>

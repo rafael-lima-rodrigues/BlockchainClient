@@ -3,18 +3,20 @@
 <head lang="en">
     <title>Historico do Documento</title>
     <th:block th:include="layout/header"></th:block>
+
 </head>
 <body>
-<div class="container">
+<div class="container" style="overflow: auto; width: auto; height: 400px">
     <div th:if="${#lists.isEmpty(history)}"> No transactions found!</div>
     <div th:if="${not #lists.isEmpty(history)}">
         <h2>Historico</h2>
-        <table class="table table-striped">
+        <table class="table table-striped table-dark" >
+            <thead>
             <tr>
                 <th>ID</th>
-                <th>Descricao</th>
-                <th>Dados</th>
-                <th>Assinatura</th>
+                <th>Description</th>
+                <th>Data</th>
+                <th>Signature</th>
 
                 <th>Owner</th>
                 <th>Transaction ID</th>
@@ -22,13 +24,14 @@
                 <th>Creator MSP</th>
                 <th>Creator Signature</th>
             </tr>
+            </thead>
             <tr th:each="historys : ${history}">
                 <td th:text="${historys.asset.id}"></td>
-                <td th:text="${historys.asset.descricao}"></td>
-                <td th:text="${historys.asset.dados}"></td>
+                <td th:text="${historys.asset.description}"></td>
+                <td th:text="${historys.asset.data}"></td>
                 <td>
                 <ul>
-                    <li th:each="entry: ${historys.asset.sign}">
+                    <li th:each="entry: ${historys.asset.signature}">
                         <span th:text="${entry.key}"/> <span class="glyphicon glyphicon-ok"/>
                     </li>
                 </ul>

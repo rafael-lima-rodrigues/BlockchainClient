@@ -15,7 +15,7 @@ import java.security.KeyStoreException;
 import java.security.Security;
 
 
-public class GeradorPDF {
+public class PDFGenerator {
 
     private final String UPLOAD_DIR = "./uploads/";
 

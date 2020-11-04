@@ -1,11 +1,11 @@
 package com.blockchain.cliente.blockchaincliente.presentation.view;
 
 import com.blockchain.cliente.blockchaincliente.config.BlockchainNetworkAttributes;
-import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
+import com.blockchain.cliente.blockchaincliente.model.DigitalDocument;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.blockchain.cliente.blockchaincliente.service.DigitalSignService;
-import com.blockchain.cliente.blockchaincliente.util.GeradorPDF;
+import com.blockchain.cliente.blockchaincliente.util.PDFGenerator;
 import com.blockchain.cliente.blockchaincliente.util.ReaderKeys;
 import com.itextpdf.text.DocumentException;
 import org.apache.commons.io.IOUtils;
@@ -17,12 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -40,114 +36,114 @@ public class IndexController {
     }
 
     @RequestMapping("/document/add")
-    public String createDs(Model model) {
+    public String create(Model model) {
 
-        model.addAttribute("documentsSigned", new DocumentsSigned());
+        model.addAttribute("digitalDocument", new DigitalDocument());
         return "create";
     }
 
     @RequestMapping("/documents/save")
-    public String createDs(@RequestParam MultipartFile dados, @RequestParam String descricao, Model model) {
-        DocumentsSigned documentsSigned = new DocumentsSigned();
-        GeradorPDF geradorPDF = new GeradorPDF();
+    public String create(@RequestParam MultipartFile data, @RequestParam String description, Model model) {
+        DigitalDocument digitalDocument = new DigitalDocument();
+        PDFGenerator PDFGenerator = new PDFGenerator();
 
         try {
-            ByteArrayInputStream stream = new ByteArrayInputStream(dados.getBytes());
+            ByteArrayInputStream stream = new ByteArrayInputStream(data.getBytes());
             String myString = IOUtils.toString(stream, StandardCharsets.UTF_8);
             MessageDigest algh = MessageDigest.getInstance("SHA-256");
             byte message[] = algh.digest(myString.getBytes(StandardCharsets.UTF_8));
             String encoded = Base64.getEncoder().encodeToString(message);
 
-            documentsSigned.setDados(encoded);
-            documentsSigned.setDescricao(descricao);
-            documentsSigned.setId(UUID.randomUUID().toString());
-            documentsSigned.setUserIdOwner(BlockchainNetworkAttributes.ORG1_NAME);
-            digitalSignService.save(documentsSigned);
-            geradorPDF.gerarArquivo(dados, documentsSigned.getId());
+            digitalDocument.setData(encoded);
+            digitalDocument.setDescription(description);
+            digitalDocument.setId(UUID.randomUUID().toString());
+            digitalDocument.setUserIdOwner(BlockchainNetworkAttributes.ORG1_NAME);
+            digitalSignService.save(digitalDocument);
+            PDFGenerator.gerarArquivo(data, digitalDocument.getId());
 
         } catch (IOException | NoSuchAlgorithmException | DocumentException e) {
             e.printStackTrace();
         }
 
-        model.addAttribute("userIdOwner", documentsSigned.getUserIdOwner());
+        model.addAttribute("userIdOwner", digitalDocument.getUserIdOwner());
         return "redirect:/document/list";
     }
 
     @RequestMapping("/document/get")
-    public String editDS(@RequestParam String id,
+    public String edit(@RequestParam String id,
                          Model model) {
         model.addAttribute(
-                "documentsSigned",
+                "digitalDocument",
                 digitalSignService.getById(id));
         return "view";
     }
 
-    @RequestMapping("/listDocs/assinar")
-    public String assinarDoc(@RequestParam String id,
+    @RequestMapping("/listDocs/sign")
+    public String signDoc(@RequestParam String id,
                              Model model) {
         model.addAttribute(
-                "documentsSigned",
+                "digitalDocument",
                 digitalSignService.getById(id));
-        return "assinar";
+        return "sign";
     }
 
     @RequestMapping("/document/search")
     public String searchDoc(Model model) {
-        model.addAttribute("docs", new DocumentsSigned());
+        model.addAttribute("docs", new DigitalDocument());
         return "search";
     }
 
     @RequestMapping("/document/list")
-    public String getAllDS(Model model) {
+    public String getAll(Model model) {
 
         model.addAttribute("docs", digitalSignService.getAll());
         return "listDocs";
     }
 
     @RequestMapping("/listDocs/delete")
-    public String deleteDS(@RequestParam String id) {
+    public String delete(@RequestParam String id) {
         digitalSignService.delete(id);
         return "redirect:/document/list";
     }
 
     @RequestMapping("/documents/update")
-    public String saveDs(
+    public String save(
             @RequestParam String id,
-            @RequestParam String dados,
-            @RequestParam String descricao,
+            @RequestParam String data,
+            @RequestParam String description,
             @RequestParam String userIdOwner,
-            @RequestParam Boolean sign, Model model
+            Model model
     ) {
 
-        DocumentsSigned documentsSigned = digitalSignService.getById(id);
+        DigitalDocument digitalDocument = digitalSignService.getById(id);
 
-        documentsSigned.setDescricao(descricao);
-        documentsSigned.setDados(dados);
-        documentsSigned.setUserIdOwner(userIdOwner);
+        digitalDocument.setDescription(description);
+        digitalDocument.setData(data);
+        digitalDocument.setUserIdOwner(userIdOwner);
 
-        digitalSignService.update(id, documentsSigned);
+        digitalSignService.update(id, digitalDocument);
         model.addAttribute("userIdOwner", userIdOwner);
         return "redirect:/listDocs";
     }
 
-    @RequestMapping("/listDocs/saveSign")
-    public String AssinarDocumento(@RequestParam String id) {
+    @RequestMapping("/listDocs/saveSignature")
+    public String SignDocument(@RequestParam String id) {
 
         ReaderKeys readerKeys = new ReaderKeys();
-        DocumentsSigned documentsSigned = digitalSignService.getById(id);
-        GeradorPDF geradorPDF = new GeradorPDF();
-
+        DigitalDocument digitalDocument = digitalSignService.getById(id);
+        PDFGenerator PDFGenerator = new PDFGenerator();
+        System.out.println("=====Assinando=====");
         try {
             PrivateKey privateKey = readerKeys.readPrivateKey();
             String publicKey = readerKeys.readPublicKey();
-            System.out.println("Chave Publica: " + publicKey);
+            System.out.println("Public key: " + publicKey);
             String signature = readerKeys
-                    .signatureGenerator(documentsSigned.getDados(), privateKey);
-            System.out.println("Assinatura: " + signature);
+                    .signatureGenerator(digitalDocument.getData(), privateKey);
+            System.out.println("signature: " + signature);
 
-            documentsSigned.addMemberSign(BlockchainNetworkAttributes.ORG1_NAME, true);
-            digitalSignService.update(id, documentsSigned);
-            geradorPDF.editarPdf(id, publicKey, signature, documentsSigned.getDados());
+            digitalDocument.addMemberSignature(BlockchainNetworkAttributes.ORG1_NAME, true);
+            digitalSignService.update(id, digitalDocument);
+            PDFGenerator.editarPdf(id, publicKey, signature, digitalDocument.getData());
 
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException |
                 InvalidKeyException | SignatureException |
@@ -161,7 +157,7 @@ public class IndexController {
         return "verify";
     }
 
-    @RequestMapping("/document/validar")
+    @RequestMapping("/document/validate")
     public String verificarDocumento(@RequestParam(value = "publicKey") String publicKey,
                                      @RequestParam(value = "hashDoc") String hashDoc,
                                      @RequestParam(value = "signature") String signature,
@@ -173,7 +169,7 @@ public class IndexController {
             verify = readerKeys.verifySign(hashDoc, publicKey, signature);
             System.out.println(verify);
             if (verify) {
-                attributes.addFlashAttribute("success", "Assinatura Valida");
+                attributes.addFlashAttribute("success", "Valid signature");
                 return "redirect:/document/verify";
             }
 
@@ -181,23 +177,23 @@ public class IndexController {
                 | SignatureException | InvalidKeyException e) {
             e.printStackTrace();
         }
-        attributes.addFlashAttribute("failed", "Assinatura Invalida");
+        attributes.addFlashAttribute("failed", "Valid signature");
         return "redirect:/document/verify";
 
     }
 
     @RequestMapping("/documents/query")
-    public String queryDS(
+    public String query(
             @RequestParam(required = false) String id,
-            @RequestParam(required = false) String descricao, Model model) {
+            @RequestParam(required = false) String description, Model model) {
 
         RichQuery query = new RichQuery();
         Map<String, Object> selector = new HashMap<>();
         if (id != null && !id.isEmpty()) {
             selector.put("id", id);
         }
-        if (descricao != null && !descricao.isEmpty()) {
-            selector.put("descricao", descricao);
+        if (description != null && !description.isEmpty()) {
+            selector.put("description", description);
         }
 
         query.setSelector(selector);
