@@ -8,9 +8,9 @@ import org.hyperledger.fabric.sdk.exception.ProposalException;
 
 import java.util.List;
 
-public interface ChaincodeExecuter {
+public interface IChaincodeExecuterDS {
 
-    String save(DocumentsSigned documentsSigned);
+    String save(String key, DocumentsSigned documentsSigned);
     String executeTransactionDS(boolean invoke, String func, String[] args) throws InvalidArgumentException, ProposalException;
     public String update(String key, DocumentsSigned  newDocument);
     public String getObjectByKey(String digitalSignId);

@@ -1,6 +1,6 @@
 package com.blockchain.cliente.blockchaincliente.repository;
 
-import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
+import com.blockchain.cliente.blockchaincliente.model.DigitalDocument;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 
@@ -8,17 +8,17 @@ import java.util.List;
 
 public interface DigitalSignDAO {
 
-    DocumentsSigned getbyId(String id);
+    DigitalDocument getbyId(String id);
 
-    void save(DocumentsSigned documentsSigned);
+    void save(DigitalDocument digitalDocument);
 
-    void update(String key, DocumentsSigned documentsSigned);
+    void update(String key, DigitalDocument digitalDocument);
 
-    List<DocumentsSigned> query (RichQuery query);
+    List<DigitalDocument> query (RichQuery query);
 
     void  delete (String id);
 
-    List<DocumentsSigned> getAll();
+    List<DigitalDocument> getAll();
 
     List<TransactionHistory> getHistory (String id);
 }

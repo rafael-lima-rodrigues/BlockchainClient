@@ -1,6 +1,6 @@
 package com.blockchain.cliente.blockchaincliente.service.implent;
 
-import com.blockchain.cliente.blockchaincliente.model.DocumentsSigned;
+import com.blockchain.cliente.blockchaincliente.model.DigitalDocument;
 import com.blockchain.cliente.blockchaincliente.model.TransactionHistory;
 import com.blockchain.cliente.blockchaincliente.model.query.RichQuery;
 import com.blockchain.cliente.blockchaincliente.repository.DigitalSignDAO;
@@ -17,22 +17,22 @@ public class DigitalSignServiceImpl implements DigitalSignService {
     DigitalSignDAO digitalSignDAO;
 
     @Override
-    public DocumentsSigned getById(String id) {
+    public DigitalDocument getById(String id) {
         return digitalSignDAO.getbyId(id);
     }
 
     @Override
-    public void save(DocumentsSigned documentsSigned) {
-        digitalSignDAO.save(documentsSigned);
+    public void save(DigitalDocument digitalDocument) {
+        digitalSignDAO.save(digitalDocument);
     }
 
     @Override
-    public void update(String key, DocumentsSigned documentsSigned) {
-       digitalSignDAO.update(key, documentsSigned);
+    public void update(String key, DigitalDocument digitalDocument) {
+       digitalSignDAO.update(key, digitalDocument);
     }
 
     @Override
-    public List<DocumentsSigned> query(RichQuery query) {
+    public List<DigitalDocument> query(RichQuery query) {
         return digitalSignDAO.query(query);
     }
 
@@ -42,7 +42,7 @@ public class DigitalSignServiceImpl implements DigitalSignService {
     }
 
     @Override
-    public List<DocumentsSigned> getAll() {
+    public List<DigitalDocument> getAll() {
         return digitalSignDAO.getAll();
     }
 
